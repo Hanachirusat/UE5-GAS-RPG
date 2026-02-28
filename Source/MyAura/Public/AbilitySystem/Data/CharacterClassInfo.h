@@ -1,0 +1,66 @@
+
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "ScalableFloat.h"
+#include "Engine/DataAsset.h"
+#include "CharacterClassInfo.generated.h"
+
+class UGameplayAbility;
+class UGameplayEffect;
+
+UENUM(BlueprintType)
+enum class ECharacterClass :uint8
+{
+	Elementalist,
+	Warrior,
+	Ranger
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterClassDefaultInfo
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Class Defaults")
+	TSubclassOf<UGameplayEffect> PrimaryAttribute;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Class Defaults")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Class Defaults")
+	FScalableFloat XPReward = FScalableFloat();
+};
+/**
+ * 
+ */
+UCLASS()
+class MYAURA_API UCharacterClassInfo : public UDataAsset
+{
+	GENERATED_BODY()
+public:
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Character Class Map")
+	TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Common Attribute GE")
+	TSubclassOf<UGameplayEffect> PrimaryAttribute_SetByCaller;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Common Attribute GE")
+	TSubclassOf<UGameplayEffect> SecondaryAttribute;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Common Attribute GE")
+	TSubclassOf<UGameplayEffect> SecondaryAttribute_Infinite;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Common Attribute GE")
+	TSubclassOf<UGameplayEffect> BaseAttribute;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Common Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults | Damage")
+	TObjectPtr<UCurveTable> DamageCalculationCoefficients;
+	
+	FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass CharacterClass);
+};
